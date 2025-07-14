@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GitCoach AI</title>
+</head>
+<body>
+    <h1>Ask GitCoach AI</h1>
+    <input type="text" id="question" placeholder="Ask a Git question..." />
+    <button onclick="ask()">Ask</button>
+    <pre id="response"></pre>
+
+    <script>
+        async function ask() {
+            const question = document.getElementById("question").value;
+            const res = await fetch("/api/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question })
+            });
+            const text = await res.text();
+            document.getElementById("response").innerText = text;
+        }
+    </script>
+</body>
+</html>
