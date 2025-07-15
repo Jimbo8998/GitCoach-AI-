@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GitCoach AI</title>
+</head>
+<body>
+  <h1>GitCoach-AI</h1>
+  <label for="question">Ask a Git question:</label><br>
+  <input type="text" id="question" placeholder="e.g., What is Git stash?" style="width: 300px;" />
+  <button onclick="askQuestion()">Submit</button>
+  <pre id="response" style="margin-top:20px;"></pre>
+
+  <script>
+    async function askQuestion() {
+      const question = document.getElementById("question").value;
+      const resArea = document.getElementById("response");
+      resArea.textContent = "Loading...";
+
+      try {
+        const response = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        if (!response.ok) {
+          throw new Error("Server error: " + response.status);
+        }
+        const result = await response.text();
+        resArea.textContent = result;
+      } catch (err) {
+        resArea.textContent = "Error: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>

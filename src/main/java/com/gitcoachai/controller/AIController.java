@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
@@ -24,15 +26,23 @@ public class AIController {
     }
 
     @PostMapping("/ask")
-    public ResponseEntity<?> askQuestion(@RequestBody Map<String, String> request) {
+    public Mono<ResponseEntity<String>> askQuestion(@RequestBody Map<String, String> request) {
         String question = request.get("question");
         logger.info("API called with question: {}", question);
 
         if (question == null || question.trim().isEmpty()) {
             logger.warn("Invalid question received");
-            return ResponseEntity.badRequest().body("Question is required.");
+            return Mono.just(ResponseEntity.badRequest().body("Question is required."));
         }
 
-        return ResponseEntity.ok(chatService.ask(question));
+        return chatService.ask(question)
+                .map(response -> {
+                    logger.info("Response from ChatService: {}", response);
+                    return ResponseEntity.ok(response);
+                })
+                .onErrorResume(e -> {
+                    logger.error("Error processing question: {}", e.getMessage(), e);
+                    return Mono.just(ResponseEntity.status(500).body("An error occurred while processing your request."));
+                });
     }
 }

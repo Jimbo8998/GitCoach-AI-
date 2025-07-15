@@ -1,0 +1,5 @@
+com/gitcoachai/config/DotenvConfig.class
+com/gitcoachai/GitCoachAiApplication.class
+com/gitcoachai/service/ChatService.class
+com/gitcoachai/controller/AIController.class
+com/gitcoachai/config/WebClientConfig.class
