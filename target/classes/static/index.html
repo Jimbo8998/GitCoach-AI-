@@ -3,23 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>GitCoach AI</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #0f0;
+            font-family: monospace;
+            padding: 40px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            margin: 10px;
+        }
+        textarea {
+            width: 80%;
+            height: 200px;
+            margin-top: 20px;
+            font-size: 16px;
+            background-color: #222;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Ask GitCoach AI</h1>
+    <h1>GitCoach AI</h1>
     <input type="text" id="question" placeholder="Ask a Git question..." />
-    <button onclick="ask()">Ask</button>
-    <pre id="response"></pre>
+    <br>
+    <button onclick="ask()">Submit</button>
+    <br>
+    <textarea id="response" readonly></textarea>
 
     <script>
         async function ask() {
             const question = document.getElementById("question").value;
-            const res = await fetch("/api/ask", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question })
-            });
-            const text = await res.text();
-            document.getElementById("response").innerText = text;
+            const responseBox = document.getElementById("response");
+
+            responseBox.value = "Thinking...";
+
+            try {
+                const response = await fetch("/api/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await response.text();
+                responseBox.value = data;
+            } catch (err) {
+                responseBox.value = "Error: " + err.message;
+            }
         }
     </script>
 </body>

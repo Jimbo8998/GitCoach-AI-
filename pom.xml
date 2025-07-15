@@ -2,48 +2,61 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.gitcoachai</groupId>
-    <artifactId>GitCoach-AI</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-    <name>GitCoach-AI</name>
-    <description>AI-powered Git tutor</description>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.2.4</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
 
-    <properties>
-        <java.version>17</java.version>
-        <spring.boot.version>3.2.4</spring.boot.version>
-    </properties>
+  <groupId>com.gitcoachai</groupId>
+  <artifactId>GitCoach-AI</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>GitCoach-AI</name>
+  <description>AI-powered Git tutor</description>
+
+  <properties>
+    <java.version>17</java.version>
+  </properties>
+
 
     <dependencies>
-        <!-- Spring Boot -->
+        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- JSON Processing -->
+        <!-- Spring Boot JSON -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
 
-        <!-- OpenAI / HTTP -->
+        <!-- WebClient (Spring WebFlux) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- OkHttp (for OpenAI HTTP calls) -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
 
-        <!-- JSON Parsing -->
+        <!-- JSON Handling -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
 
-        <!-- DevTools (Hot Reload) -->
+        <!-- DevTools for hot reload -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -74,13 +87,14 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.gitcoachai.GitCoachAiApplication</mainClass>
+                </configuration>
             </plugin>
 
-            <!-- JUnit 5 Support -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

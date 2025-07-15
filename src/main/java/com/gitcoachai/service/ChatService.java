@@ -1,57 +1,60 @@
 package com.gitcoachai.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 @Service
 public class ChatService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
+    private final WebClient webClient;
 
     @Value("${openai.api.key}")
-    private String openaiApiKey;
+    private String openAiApiKey;
 
-    private final WebClient webClient = WebClient.create("https://api.openai.com/v1/chat/completions");
+    public ChatService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder
+                .baseUrl("https://api.openai.com/v1")
+                .build();
+    }
 
-    public Mono<String> ask(String question) {
-        logger.info("Received question: {}", question);
+    public String ask(String question) {
+        try {
+            JSONArray messages = new JSONArray()
+                    .put(new JSONObject()
+                            .put("role", "user")
+                            .put("content", question));
 
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "gpt-3.5-turbo");
+            JSONObject requestBody = new JSONObject()
+                    .put("model", "gpt-3.5-turbo")
+                    .put("messages", messages);
 
-        Map<String, String> message = Map.of(
-                "role", "user",
-                "content", question
-        );
-        requestBody.put("messages", List.of(message));
+            String responseBody = webClient.post()
+                    .uri("/chat/completions")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + openAiApiKey)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(requestBody.toString())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
-        return webClient.post()
-                .header("Authorization", "Bearer " + openaiApiKey)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .map(response -> {
-                    logger.debug("API Response: {}", response);
-                    List<?> choices = (List<?>) response.get("choices");
-                    if (choices != null && !choices.isEmpty()) {
-                        Map<?, ?> firstChoice = (Map<?, ?>) choices.get(0);
-                        Map<?, ?> messageMap = (Map<?, ?>) firstChoice.get("message");
-                        String answer = (String) messageMap.get("content");
-                        logger.info("Returning answer: {}", answer);
-                        return answer;
-                    } else {
-                        logger.warn("No choices found in response.");
-                        return "No answer found.";
-                    }
-                });
+            JSONObject responseJson = new JSONObject(responseBody);
+            return responseJson
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content");
+
+        } catch (WebClientResponseException e) {
+            return "OpenAI API error: " + e.getResponseBodyAsString();
+        } catch (Exception e) {
+            return "Internal error: " + e.getMessage();
+        }
     }
 }
