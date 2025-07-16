@@ -1,5 +1,10 @@
+com/gitcoachai/service/GitService.class
+com/gitcoachai/controller/ChallengeController.class
 com/gitcoachai/config/DotenvConfig.class
 com/gitcoachai/GitCoachAiApplication.class
+com/gitcoachai/service/ChallengeService.class
 com/gitcoachai/service/ChatService.class
+com/gitcoachai/controller/AICommitController.class
+com/gitcoachai/controller/GitController.class
 com/gitcoachai/controller/AIController.class
 com/gitcoachai/config/WebClientConfig.class

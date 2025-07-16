@@ -34,17 +34,17 @@ class AIControllerTest {
 
         when(chatService.ask(question)).thenReturn(Mono.just(expectedResponse));
 
-        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", question));
+        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", question)).block();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
     }
 
     @Test
     void testAskQuestionInvalidInput() {
-        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", ""));
+        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", "")).block();
 
-        assertEquals(400, response.getStatusCodeValue());
+        assertEquals(400, response.getStatusCode().value());
         assertEquals("Question is required.", response.getBody());
     }
 
@@ -54,9 +54,9 @@ class AIControllerTest {
 
         when(chatService.ask(question)).thenThrow(new RuntimeException("Service error"));
 
-        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", question));
+        ResponseEntity<?> response = aiController.askQuestion(Map.of("question", question)).block();
 
-        assertEquals(500, response.getStatusCodeValue());
+        assertEquals(500, response.getStatusCode().value());
         assertEquals("An error occurred while processing your request.", response.getBody());
     }
 }

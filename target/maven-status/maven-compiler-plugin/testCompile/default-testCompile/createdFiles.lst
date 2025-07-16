@@ -1,0 +1,5 @@
+com/gitcoachai/controller/GitControllerTest.class
+com/gitcoachai/service/ChatServiceTest.class
+com/gitcoachai/controller/ChallengeControllerTest.class
+com/gitcoachai/controller/AICommitControllerTest.class
+com/gitcoachai/controller/AIControllerTest.class
