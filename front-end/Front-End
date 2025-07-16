@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>GitCoach AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>GitCoach-AI</h1>
-  <label for="question">Ask a Git question:</label><br>
-  <input type="text" id="question" placeholder="e.g., What is Git stash?" style="width: 300px;" />
-  <button onclick="askQuestion()">Submit</button>
-  <pre id="response" style="margin-top:20px;"></pre>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <div class="max-w-2xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">GitCoach-AI</h1>
+    <label for="question" class="block text-lg font-medium mb-2">Ask a Git question:</label>
+    <input type="text" id="question" placeholder="e.g., What is Git stash?" class="w-full p-2 border border-gray-300 rounded mb-4" />
+    <button onclick="askQuestion()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
+    <pre id="response" class="mt-4 p-2 bg-gray-200 rounded"></pre>
+  </div>
 
   <script>
     async function askQuestion() {
